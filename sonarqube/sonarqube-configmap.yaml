@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-external-opts
+data:
+  SONARQUBE_JDBC_USERNAME: sa
+  SONARQUBE_JDBC_URL: jdbc:sqlserver://192.168.68.150;encrypt=false;databaseName=SonarQube_DataBelli;integratedSecurity=false

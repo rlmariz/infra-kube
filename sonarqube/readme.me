@@ -1,0 +1,30 @@
+https://github.com/SonarSource/helm-chart-sonarqube/tree/master/charts/sonarqube
+
+
+helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+helm repo update
+
+
+kubectl create namespace sonarqube
+helm upgrade --install -n sonarqube sonarqube sonarqube/sonarqube
+
+helm upgrade --install sonarqube sonarqube/sonarqube
+
+-f values.yaml
+
+helm upgrade --install sonarqube/sonarqube -f values.yaml
+
+helm delete sonarqube/sonarqube
+
+
+helm install databelli sonarqube/sonarqube --values values.yaml -n default
+helm upgrade databelli sonarqube/sonarqube --values values.yaml -n default
+helm delete databelli
+kubectl port-forward databelli-sonarqube-0 9900:9000 -n default
+
+helm upgrade --install -f values.yaml -n default databelli sonarqube/sonarqube
+
+kubectl create secret generic sql-2022-user --from-literal=username=sa
+kubectl create secret generic sql-2022-password --from-literal=password=data@2022
+
+sonarqube

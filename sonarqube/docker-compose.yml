@@ -1,0 +1,56 @@
+version: "3.7"
+services:
+    db:
+        image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+        environment:
+            - SA_PASSWORD=sql2017@
+            - ACCEPT_EULA=Y
+             - attach_dbs=
+                         [
+                             {"dbName":"SonarQube_DataBelli","dbFiles":[".\\database\\SonarQube_DataBelli.mdf",".\\database\\SonarQube_DataBelli_log.ldf"]}
+                         ]
+        ports:
+            - "10433:1433"
+        container_name: sonarqube_sql2017
+        hostname: sonarqube_sql2017
+        restart: unless-stopped
+        networks:
+            - sonarnet
+        volumes:
+            - "./database:/var/opt/mssql/data"
+    sonarqube:
+        image: sonarqube:latest
+        deploy:
+            resources:
+              limits:
+                cpus: '0.10'
+                memory: 200M        
+        container_name: sonarqube
+        hostname: sonarqube
+        restart: unless-stopped        
+        ports:
+            - "9000:9000"
+        networks:
+            - sonarnet
+        environment:
+            - sonar.jdbc.url=jdbc:sqlserver://sonarqube_sql2017;databaseName=SonarQube_DataBelli;integratedSecurity=false
+            - sonar.jdbc.username=sa           
+            - sonar.jdbc.password=sql2017@
+        volumes:
+            - sonarqube_conf:/opt/sonarqube/conf
+            - sonarqube_extensions:/opt/sonarqube/extensions
+            - sonarqube_logs:/opt/sonarqube/logs
+            - sonarqube_data:/opt/sonarqube/data
+        depends_on:
+            - db            
+volumes:
+    sonarqube_conf:
+    sonarqube_data:
+    sonarqube_extensions:
+    sonarqube_logs:
+    postgresql:
+    postgresql_data:
+
+networks:
+    sonarnet:
+        driver: bridge  
